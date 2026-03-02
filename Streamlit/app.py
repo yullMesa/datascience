@@ -12,7 +12,7 @@ col_video, col_stats = st.columns([0.7, 0.3])
 
 with col_video:
     # Al no haber errores, el video se verá grande de nuevo
-    st.video("https://www.youtube.com/watch?v=tu_video_de_lol") 
+    st.video("https://youtu.be/pyuiUd2L9CA") 
     st.write("### Coach Insights")
     st.info("Diamond players focus on Gold Diff in the first 10 minutes.")
 
