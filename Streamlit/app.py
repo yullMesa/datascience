@@ -1,49 +1,34 @@
 import streamlit as st
 import pandas as pd
 
-# Configuración de la página para que ocupe todo el ancho (Modo Cine)
-st.set_page_config(layout="wide", page_title="TFT Data Analytics - Platzi Style")
+# 1. Configuración de pantalla ancha (Platzi Style)
+st.set_page_config(layout="wide", page_title="LoL Analytics Academy")
 
-# Estilo CSS para que se parezca a Platzi (Fondo oscuro y bordes redondeados)
-st.markdown("""
-    <style>
-    .main {
-        background-color: #121f3d;
-        color: white;
-    }
-    stVideo {
-        border-radius: 15px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# 2. Título del Proyecto
+st.title("🎮 LoL Analytics: Diamond Performance")
 
-# Título del Proyecto (Usa Inglés para practicar tu Elementary 3)
-st.title("🎮 TFT Match Analyzer: Pro vs Your Stats")
-
-# Creamos las dos columnas: una grande para el video y una lateral para la data
-col_video, col_data = st.columns([0.7, 0.3])
+# 3. Definimos las columnas (70% para el video, 30% para las estadísticas)
+col_video, col_stats = st.columns([0.7, 0.3])
 
 with col_video:
-    st.subheader("Match Replay")
-    # Aquí pegas el link de tu video de YouTube
-    url_youtube = "https://www.youtube.com/watch?v=tu_link_aqui" 
-    st.video(url_youtube)
-    
-    st.info("💡 Insight: In this round, your gold management was 15% below Challenger level.")
+    # Al no haber errores, el video se verá grande de nuevo
+    st.video("https://www.youtube.com/watch?v=tu_video_de_lol") 
+    st.write("### Coach Insights")
+    st.info("Diamond players focus on Gold Diff in the first 10 minutes.")
 
-with col_data:
-    st.subheader("Live Analytics")
-    # Simulamos una métrica de comparación con el dataset de Challengers
-    st.metric(label="Win Probability", value="65%", delta="+5% vs Last Round")
-    
-    # Un gráfico de barras de prueba (luego lo conectamos al CSV)
-    chart_data = pd.DataFrame({
-        'Stat': ['Gold', 'Health', 'Level'],
-        'You': [40, 85, 6],
-        'Challenger': [50, 90, 7]
-    }).set_index('Stat')
-    
-    st.bar_chart(chart_data)
-    
-    st.write("### Current Synergy")
-    st.success("✨ KDA - Active")
+with col_stats:
+    st.header("Live Metrics")
+    try:
+        # IMPORTANTE: Nota la 'A' mayúscula en 'Archive' como en tu carpeta
+        df = pd.read_csv('../Archive/high_diamond_ranked_10min.csv')
+        
+        # Calculamos una métrica real del dataset
+        avg_gold = df['blueGoldDiff'].mean()
+        st.metric(label="Avg Gold Diff (Blue Team)", value=f"{avg_gold:.2f}")
+        
+        # Gráfica de barras con las primeras muertes del dataset
+        st.bar_chart(df[['blueKills', 'redKills']].head(15))
+        
+        st.success("✅ Data Loaded Successfully!")
+    except FileNotFoundError:
+        st.error("⚠️ No se encontró el archivo. Revisa si la carpeta es 'Archive' o 'archive'.")
