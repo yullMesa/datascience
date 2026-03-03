@@ -1,47 +1,41 @@
-import joblib
 import streamlit as st
 import pandas as pd
 import pytesseract
+from PIL import Image
 
-
+# Configuración de Tesseract local (la que hiciste en la carpeta teser)
 pytesseract.pytesseract.tesseract_cmd = r'teser\tesseract.exe'
-# 1. Configuración de pantalla ancha (Platzi Style)
-st.set_page_config(layout="wide", page_title="LoL Analytics Academy")
 
-# 2. Título del Proyecto
+st.set_page_config(layout="wide", page_title="Gamer Diagnostic Tool")
 st.title("Gamer Diagnostic Tool 🎮")
 
-uploaded_file = st.file_uploader("Sube tus estadísticas (CSV o JSON)")
+# --- SECCIÓN DE ENTRADA ---
+with st.expander("📤 Sube tus datos de partida"):
+    st.write("Aquí puedes subir los archivos generados por nuestro motor de análisis.")
+    col_input1, col_input2 = st.columns(2)
+    
+    with col_input1:
+        yt_link = st.text_input("Link de YouTube de tu Gameplay", "https://youtu.be/pyuiUd2L9CA")
+    
+    with col_input2:
+        uploaded_file = st.file_uploader("Sube tu archivo .CSV o .JSON extraído", type=['csv', 'json'])
 
-mi_modelo = joblib.load('tu_modelo_entrenado.pkl')
-if uploaded_file:
-    user_data = pd.read_csv(uploaded_file)
-    # Aquí corres tu modelo de ML que ya tienes entrenado con la data "Maestra"
-    resultado = mi_modelo.predict(user_data)
-    st.write(f"Tu nivel de desempeño es: {resultado}")
+st.divider()
 
-# 3. Definimos las columnas (70% para el video, 30% para las estadísticas)
+# --- DISEÑO DE PANTALLA ---
 col_video, col_stats = st.columns([0.7, 0.3])
 
 with col_video:
-    # Al no haber errores, el video se verá grande de nuevo
-    st.video("https://youtu.be/pyuiUd2L9CA") 
-    st.write("### Coach Insights")
-    st.info("Diamond players focus on Gold Diff in the first 10 minutes.")
+    st.subheader("Análisis de Video")
+    # El video cambia según el link que ponga el usuario arriba
+    st.video(yt_link)
 
 with col_stats:
-    st.header("Live Metrics")
-    try:
-        # IMPORTANTE: Nota la 'A' mayúscula en 'Archive' como en tu carpeta
-        df = pd.read_csv('../Archive/high_diamond_ranked_10min.csv')
-        
-        # Calculamos una métrica real del dataset
-        avg_gold = df['blueGoldDiff'].mean()
-        st.metric(label="Avg Gold Diff (Blue Team)", value=f"{avg_gold:.2f}")
-        
-        # Gráfica de barras con las primeras muertes del dataset
-        st.bar_chart(df[['blueKills', 'redKills']].head(15))
-        
-        st.success("✅ Data Loaded Successfully!")
-    except FileNotFoundError:
-        st.error("⚠️ No se encontró el archivo. Revisa si la carpeta es 'Archive' o 'archive'.")
+    st.subheader("Live Metrics")
+    st.info("💡 **Instrucciones:** Una vez subas tu archivo CSV, aquí compararemos tus métricas con el modelo maestro.")
+    
+    # Botón que mencionaste para la explicación
+    if st.button("¿Cómo obtener mis datos?"):
+        st.write("1. Procesa tu video con nuestro script de Tesseract.")
+        st.write("2. Exporta el archivo CSV resultante.")
+        st.write("3. Súbelo en la sección de arriba para recibir el diagnóstico de la IA.")
