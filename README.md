@@ -1,18 +1,17 @@
-# 🎮 LoL Analytics Academy: Diamond Performance
-An interactive dashboard built with **Streamlit** to analyze high-level League of Legends matches.
+# 🎮 Gamer Diagnostic Tool: AI-Powered Performance Analysis
 
-## 🚀 Features
-- **Video Analysis:** Sync match replays with real-time data.
-- **Diamond Insights:** Compare gold differences and kill counts.
-- **Data Science:** Built using Kaggle datasets and Python Pandas.
+Herramienta de Ciencia de Datos diseñada para analizar el desempeño de jugadores en tiempo real extrayendo métricas directamente de gameplays de juegos como LoL, Subnautica y Horizon Zero Dawn.
+
+## 🚀 Key Features
+- **AI OCR Integration:** Extracción automática de datos (oro, kills, recursos) usando **Tesseract OCR**.
+- **Real-Time Diagnostics:** Compara tu desempeño contra modelos maestros de Machine Learning.
+- **Multi-Game Support:** Diseñado para juegos online y offline mediante análisis de frames.
 
 ## 🛠️ Tech Stack
-- Python (Pandas)
-- Streamlit
-- GitHub Projects for Task Management
+- **Python (Pandas & Pytesseract)**
+- **Machine Learning (Scikit-Learn)**
+- **Streamlit** (Interactive Interface)
+- **Git/GitHub** (Project Management - Certified by Platzi/CESDE)
 
-# 🎮 LoL Analytics Academy: Diamond Performance
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-
+## 🏆 Certifications
+- **Git and GitHub Course** - Platzi/CESDE (Aprobado el 3 de marzo de 2026)

@@ -1,11 +1,24 @@
+import joblib
 import streamlit as st
 import pandas as pd
+import pytesseract
 
+
+pytesseract.pytesseract.tesseract_cmd = r'teser\tesseract.exe'
 # 1. Configuración de pantalla ancha (Platzi Style)
 st.set_page_config(layout="wide", page_title="LoL Analytics Academy")
 
 # 2. Título del Proyecto
-st.title("🎮 LoL Analytics: Diamond Performance")
+st.title("Gamer Diagnostic Tool 🎮")
+
+uploaded_file = st.file_uploader("Sube tus estadísticas (CSV o JSON)")
+
+mi_modelo = joblib.load('tu_modelo_entrenado.pkl')
+if uploaded_file:
+    user_data = pd.read_csv(uploaded_file)
+    # Aquí corres tu modelo de ML que ya tienes entrenado con la data "Maestra"
+    resultado = mi_modelo.predict(user_data)
+    st.write(f"Tu nivel de desempeño es: {resultado}")
 
 # 3. Definimos las columnas (70% para el video, 30% para las estadísticas)
 col_video, col_stats = st.columns([0.7, 0.3])
