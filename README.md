@@ -13,5 +13,3 @@ Herramienta de Ciencia de Datos diseñada para analizar el desempeño de jugador
 - **Streamlit** (Interactive Interface)
 - **Git/GitHub** (Project Management - Certified by Platzi/CESDE)
 
-## 🏆 Certifications
-- **Git and GitHub Course** - Platzi/CESDE (Aprobado el 3 de marzo de 2026)
