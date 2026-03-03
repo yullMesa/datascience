@@ -2,9 +2,12 @@ import streamlit as st
 import pandas as pd
 import pytesseract
 from PIL import Image
+from vision import procesar_frame_a_frame
+import tkventana
 
 # Configuración de Tesseract local (la que hiciste en la carpeta teser)
 pytesseract.pytesseract.tesseract_cmd = r'teser\tesseract.exe'
+
 
 st.set_page_config(layout="wide", page_title="Gamer Diagnostic Tool")
 st.title("Gamer Diagnostic Tool 🎮")
@@ -39,3 +42,19 @@ with col_stats:
         st.write("1. Procesa tu video con nuestro script de Tesseract.")
         st.write("2. Exporta el archivo CSV resultante.")
         st.write("3. Súbelo en la sección de arriba para recibir el diagnóstico de la IA.")
+
+
+if 'ruta_frames' not in st.session_state:
+    st.session_state.ruta_frames = ""
+
+if st.button('📁 Seleccionar Carpeta de Frames'):
+    ruta = tkventana.seleccionar_carpeta()
+    if ruta:
+        st.session_state.ruta_frames = ruta
+        st.success(f"Carpeta seleccionada: {ruta}")
+
+if st.session_state.ruta_frames:
+    if st.button("🚀 Iniciar Escaneo de la IA"):
+        # Llamamos a la función de vision.py que ya creamos
+        resultados = procesar_frame_a_frame(st.session_state.ruta_frames)
+        st.write(resultados)
