@@ -1,13 +1,28 @@
+import os
+import sys
+import time
 import streamlit as st
 import pandas as pd
 import pytesseract
 from PIL import Image
-from vision import analizar_frames_ysm
+
 import tkventana
 import tkinter as tk
 from tkinter import filedialog
 import requests
+import json
+import pandas as pd
 
+
+
+
+ruta_csv = os.path.join("Streamlit", "Assets", "dataset_ml.csv")
+
+if os.path.exists(ruta_csv):
+    data_grafica = pd.read_csv(ruta_csv)
+    st.line_chart(data_grafica.set_index("frame"))
+else:
+    st.info("Esperando a que el Backend genere el dataset...")
 
 def seleccionar_archivo_local():
     root = tk.Tk()
@@ -62,18 +77,19 @@ with st.expander("📤 Sube tus datos de partida"):
                 rangos_seleccionados.append(f"{ini}-{fin}")
 
         # Botón para disparar al Backend
-        if st.button("🚀 Procesar Momentos"):
+        if st.button("🚀 Iniciar Procesamiento Maestro"):
             if ruta_final and rangos_seleccionados:
                 tiempos_string = ",".join(rangos_seleccionados)
-                params = {"ruta": ruta_final, "tiempos": tiempos_string}
                 
-                try:
-                    # El backend recibe solo el texto de la ruta
-                    response = requests.post("http://localhost:8000/procesar-local/", params=params)
-                    if response.status_code == 200:
-                        st.success("✅ ¡Vinculado! El backend está trabajando en el archivo original.")
-                except Exception as e:
-                    st.error(f"Error: {e}")
+                # Enviamos solo la ruta y los tiempos al backend
+                params = {"ruta": ruta_final, "tiempos": tiempos_string}
+                response = requests.post("http://localhost:8000/procesar-todo/", params=params)
+                
+                if response.status_code == 200:
+                    st.success("✅ Backend trabajando. YOLO está analizando los frames.")
+                else:
+                    st.error("❌ Error al contactar el backend. Asegúrate de que esté corriendo.")
+            
 
 st.divider()
 # --- DISEÑO DE PANTALLA ---
@@ -91,22 +107,30 @@ with col_video:
     
 with col_stats:
     st.subheader("🕵️ Diagnóstico Forense YSM")
-    # Mensaje de estado que pusimos antes
-    st.warning("⚠️ **Estado:** Análisis asíncrono activado (Intervalo: 7s).")
-    
-    if st.button("🚀 Iniciar Escaneo Forense"):
-        with st.spinner("Tesseract analizando momentos clave..."):
-            # Llamamos a la función optimizada
-            logs = analizar_frames_ysm("Streamlit/Assets/frames_extraidos")
-            
-            if logs:
-                for l in logs:
-                    # Mostramos el resultado con estilo hacker
-                    st.code(f"🔍 [{l['frame']}] Detectado: {l['dato']}")
+
+    # Definimos la ruta exacta a la gráfica
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    ruta_grafica = os.path.join( "Assets", "grafica_ml.png")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # --- BLOQUE DE SEGURIDAD PARA LA GRÁFICA ---
+       if st.button("Ver Resultados del ML"):
+            if os.path.exists(ruta_grafica):
+                try:
+                    # Abrimos el archivo en modo lectura de bytes ('rb')
+                    with open(ruta_grafica, "rb") as file:
+                        contenido_imagen = file.read()
+                    
+                    # Pasamos los bytes directamente a Streamlit
+                    st.image(contenido_imagen, caption="Análisis generado por el ML")
+                    st.success("¡Data visualizada correctamente!")
+                    
+                except Exception as e:
+                    st.error(f"Error de acceso: {e}")
+                    st.info("Intenta darle clic de nuevo en 1 segundo, el sistema está liberando el archivo.")
             else:
-                st.error("No se detectó texto legible en los rangos seleccionados.")
+                st.error("La gráfica aún no ha sido generada por el Backend.")
 
-
-
-
-
+   

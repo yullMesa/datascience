@@ -5,4 +5,6 @@ match.mov
 
 scripts/
 teser/
+frames_extraidos/
 Assets/
+yolov8n.pt
